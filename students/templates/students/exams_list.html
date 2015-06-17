@@ -1,0 +1,72 @@
+{% extends "students/base.html" %}
+{% load static from staticfiles %}
+{% block meta_title %}Журнал Іспитів{% endblock meta_title %}
+{% block title %}Іспити{% endblock title %}
+
+
+
+{% block content %}
+
+<table class="table table-hover table-striped">
+				{% with order_by=request.GET.order_by reverse=request.GET.reverse %}
+					<thead>
+						<tr>
+							<th><a href="#">
+							№
+							</a></th>
+							<th><a href="#">
+							Назва 
+							</a></th>
+							<th><a href="#">
+							Викладач
+							</a></th>
+							<th><a href="#">
+							Група
+							</a></th>
+							<th><a href="#">
+							Дата
+							</a></th>
+							<th><a href="#">
+							Аудиторія
+							</a></th>
+							<th>Дії</th>
+						</tr>
+					</thead>
+					{% endwith %}
+					<tbody>
+					{% for exam in exams %}
+						<tr>
+							<td>{{ forloop.counter }}</td>
+							<td><a title="Редагувати" href="{% url "exam_edit" exam.id %}">{{ exam.title }}</a></td>
+							<td>{{ exam.teacher }}</td>
+							<td><a title="Редагувати" href="{% url "exam_edit" exam.id %}">{{ exam.forgroup }}</a></td>
+							<td>{{ exam.date }}</td>
+							<td>{{ exam.room }}</td>
+							<td>
+
+								<div class="dropdown">
+									<button class="btn btn-default dropdown-toggle"
+										type="button" data-toggle="dropdown">Дія
+									<span class="caret"></span>
+									</button>
+									<ul class="dropdown-menu" role="menu">
+										<li role="presentation">
+										<!--Посещения как в студлисте -->
+											<a role="menuitem" tabindex="-1" href="#">Відвідування</a>
+										</li>
+										<li role="presentation">
+											<a role="menuitem" tabindex="-1" href="{% url "exam_edit" exam.id %}">Редагувати</a>
+										</li>
+										<li role="presentation">
+											<a role="menuitem" tabindex="-1" href="{% url "exam_delete" exam.id %}">Видалити</a>
+										</li>
+									</ul>
+								</div>
+
+							</td>
+						</tr>
+					{% endfor %}
+					</tbody>
+				</table>
+				<!-- End Students Listing -->
+{% endblock content %}	

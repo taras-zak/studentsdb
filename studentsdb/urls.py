@@ -20,8 +20,15 @@ urlpatterns = patterns('',
 	# Journal urls
 
 	url(r'^journal/$', 'students.views.journal.journal_list', name='journal'),
-	
+
+	# Exams urls
+
+	url(r'^exams/$', 'students.views.exams.exams_list', name='exams'),
+	url(r'^exams/(?P<eid>\d+)/edit/$','students.views.exams.exam_edit',name='exam_edit'),
+	url(r'^exams/(?P<eid>\d+)/delete/$','students.views.exams.exam_delete',name='exam_delete'),
+
     url(r'^admin/', include(admin.site.urls)),
+
 )
 
 if DEBUG:
