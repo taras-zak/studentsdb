@@ -3,6 +3,8 @@ from django.shortcuts import render
 from django.http import HttpResponse, HttpResponseRedirect
 from django.core.paginator import Paginator, EmptyPage,PageNotAnInteger
 from django.core.urlresolvers import reverse
+from django.contrib import messages
+from django.contrib.messages import get_messages
 from datetime import datetime
 from ..models import Student, Group
 
@@ -43,7 +45,7 @@ def students_add(request):
 		# was form add button clicked?
 		if request.POST.get('add_button') is not None:
 			# errors collection
-			errors = {}
+			#errors = {}
 
 			# data for student object
 			data = {'middle_name': request.POST.get('middle_name'),
@@ -52,41 +54,48 @@ def students_add(request):
 			# validate user input
 			first_name = request.POST.get('first_name', '').strip()
 			if not first_name:
-				errors['first_name'] = u"Ім'я є обов'язковим"
+				messages.add_message(request, messages.WARNING, "Ім'я є обов'язковим")
+				#errors['first_name'] = u"Ім'я є обов'язковим"
 			else:
 				data['first_name'] = first_name
 
 			last_name = request.POST.get('last_name', '').strip()
 			if not last_name:
-				errors['last_name'] = u"Прізвище є обов'язковим"
+				messages.add_message(request, messages.WARNING, "Прізвище є обов'язковим")
+				#errors['last_name'] = u"Прізвище є обов'язковим"
 			else:
 				data['last_name'] = last_name
 
 			birthday = request.POST.get('birthday', '').strip()
 			if not birthday:
-				errors['birthday'] = u"Дата народження є обов'язковою"
+				messages.add_message(request, messages.WARNING, "Дата народження є обов'язковою")
+				#errors['birthday'] = u"Дата народження є обов'язковою"
 
 			else:
 				try:
 					datetime.strptime(birthday, '%Y-%m-%d')
 				except Exception:
-					errors['birthday'] = u"Введіть коректний формат дати (напр. 1984-12-30)"
+					messages.add_message(request, messages.WARNING, "Введіть коректний формат дати (напр. 1984-12-30)")
+					#errors['birthday'] = u"Введіть коректний формат дати (напр. 1984-12-30)"
 				else:
 					data['birthday'] = birthday
 
 			ticket = request.POST.get('ticket', '').strip()
 			if not ticket:
-				errors['ticket'] = u"Номер білета є обов'язковим"
+				messages.add_message(request, messages.WARNING, "Номер білета є обов'язковим")
+				#errors['ticket'] = u"Номер білета є обов'язковим"
 			else:
 				data['ticket'] = ticket
 
 			student_group = request.POST.get('student_group', '').strip()
 			if not student_group:
-				errors['student_group'] = u"Оберіть групу для студента"
+				messages.add_message(request, messages.WARNING, "Оберіть групу для студента")
+				#errors['student_group'] = u"Оберіть групу для студента"
 			else:
 				groups = Group.objects.filter(pk=student_group)
 				if len(groups) != 1:
-					errors['student_group'] = u"Оберіть коректну групу"
+					#errors['student_group'] = u"Оберіть коректну групу"
+					messages.add_message(request, messages.WARNING, "Оберіть коректну групу")
 				else:
 					data['student_group'] = groups[0]
 
@@ -95,23 +104,23 @@ def students_add(request):
 				data['photo'] = photo
 
 			# save student
-			if not errors:
+			storage = get_messages(request)
+			if not storage:
 				# create student object
 				student = Student(**data)
 				student.save()
 			
 				# redirect user to students list
-				return HttpResponseRedirect(
-					u'%s?status_message=Студента %s успішно додано!' % 					(reverse('home'), student))
+				messages.add_message(request, messages.SUCCESS, 'Студента %s успішно додано!'% student)
+				return HttpResponseRedirect(reverse('home'))
 			else:
 				# render form with errors and previous user input
 				return render(request, 'students/students_add.html',
-					{'groups': Group.objects.all().order_by('title'),
-					'errors': errors})
+					{'groups': Group.objects.all().order_by('title')})
 		elif request.POST.get('cancel_button') is not None:
 			# redirect to home page on cancel button
-			return HttpResponseRedirect(
-				u'%s?status_message=Додавання студента скасовано!' % 					reverse('home'))
+			messages.add_message(request, messages.INFO, 'Додавання студента скасовано!')
+			return HttpResponseRedirect(reverse('home'))
 	else:
 		# initial form render
 		return render(request, 'students/students_add.html',
