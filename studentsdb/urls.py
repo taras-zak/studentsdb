@@ -2,6 +2,7 @@ from django.conf.urls import patterns, include, url
 from django.contrib import admin
 from .settings import MEDIA_ROOT, DEBUG
 from students.views.students import StudentUpdateView, StudentDeleteView
+from students.views.journal import JournalView
 
 urlpatterns = patterns('',
     # Students urls
@@ -20,7 +21,7 @@ urlpatterns = patterns('',
 
 	# Journal urls
 
-	url(r'^journal/$', 'students.views.journal.journal_list', name='journal'),
+	url(r'^journal/$', JournalView.as_view(), name='journal'),
 
 	# Exams urls
 
@@ -28,11 +29,11 @@ urlpatterns = patterns('',
 	url(r'^exams/(?P<eid>\d+)/edit/$','students.views.exams.exam_edit',name='exam_edit'),
 	url(r'^exams/(?P<eid>\d+)/delete/$','students.views.exams.exam_delete',name='exam_delete'),
 
-    url(r'^admin/', include(admin.site.urls)),
-
-
 	# Contact urls
 	url(r'^contact-admin/$', 'students.views.contact_admin.contact_admin', name='contact_admin'),
+
+	#admin
+    url(r'^admin/', include(admin.site.urls)),
 
 )
 

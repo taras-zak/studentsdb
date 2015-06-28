@@ -1,5 +1,5 @@
 from .groups import Group
 from .students import Student
-from .journal import Journal
+from .journal import MonthJournal
 from .exams import Exam
 

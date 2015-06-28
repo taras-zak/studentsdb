@@ -2,29 +2,30 @@
 
 from django.db import models
 
-class Journal(models.Model):
+class MonthJournal(models.Model):
+	"""Student Monthly Journal"""
 
-	class Meta(object):
+	class Meta:
 		verbose_name = u"Група"
 		verbose_name_plural = u"Журнал"
 	
-	month = models.CharField(
-		verbose_name=u'Месяц',
-		max_length=140,
-		null=True,
-		blank=True
+	date = models.DateField(
+		verbose_name=u'Дата',
+		blank=False
     )
+
 	student = models.ForeignKey('Student',
 		verbose_name=u'Cтудент',
 		blank=True,
- 		null=True
+ 		null=True,
+		unique_for_month='date'
 	)
 
 	def __unicode__(self):
-		return u"Журнал відвідувань студента %s %s за %s місяць" % (self.student.first_name, self.student.last_name, self.month)
+		return u"Журнал відвідувань студента %s %s за %s місяць %s року" % (self.student.first_name, self.student.last_name, self.date.month, self.date.year)
 
-for i in range(0, 32):
-    Journal.add_to_class('day %d' % i, models.BooleanField(
+for i in range(1, 32):
+    MonthJournal.add_to_class('day %d' % i, models.BooleanField(
         verbose_name=u'День %d' % i,
         default=None
     ))

@@ -1,125 +1,89 @@
 {% extends "students/base.html" %}
 {% load static from staticfiles %}
-{% block meta_title %}Студенти{% endblock meta_title %}
+{% block meta_title %}Облік Відвідування{% endblock meta_title %}
 {% block title %}Журнал Відвідування{% endblock title %}
 
 {% block content %}
+
+{% if not students %}
+
+<div class="alert alert-warning">
+	Поки немає жодного студента в базі. Будь-ласка,
+	<a href="{% url "students_add" %}">додайте</a> першого.
+</div>
+
+{% else %}
+
+<p id="journal-nav" class="text-center">
+	<a href="?month={{ prev_month }}"
+		title="Попередній Місяць">&larr;</a>
+
+		<!-- TODO: translate month name -->
+		<strong>{{ month_verbose }} {{ year }}</strong>
+		<a href="?month={{ next_month }}"
+		title="Наступний Місяць">&rarr;</a>
+</p>
+
+<table class="table table-hover table-striped table-bordered"
+	id="students-journal">
+
+	<thead>
+		<tr class="header">
+			<th class="num">#</th>
+			<th class="name">Студент</th>
+			{% for day in month_header %}
+			<th class="day-header">
+
+				<!-- TODO: translate day name -->
+				{{ day.verbose }}
+				<br />
+				{{ day.day }}
+			</th>
+			{% endfor %}
+		</tr>
+	</thead>
+
+	<tbody>
+
+	{% csrf_token %}
+
+	{% for student in students %}
+	<tr>
+
+	<td>
+	{% if is_paginated %}
+		{{ page_obj.start_index|add:forloop.counter|add:"-1" }}
+	{% else %}
+		{{ forloop.counter }}
+	{% endif %}
+	</td>
+
+	<td>
+		<a title="Редагувати" target="_blank"
+			href="{% url "students_edit" student.id %}">
+			{{ student.fullname }}
+		</a>
+	</td>	
+
+	{% for day in student.days %}
+	<td class="day-box">
+		<input type="checkbox" data-student-id="{{ student.id }}"
+			data-date="{{ day.date }}" data-url="{{ student.update_url }}"
+			value="1"{% if day.present %} checked="checked" {% endif %} />
+	</td>
+	{% endfor %}
+
+	</tr>
+	{% endfor %}
+	
+	</tbody>
+</table>
+
+{% endif %}
+
+{% with object_list=students %}
+	{% include "students/pagination.html" %}
+{% endwith %}
+		
 				
-				<div id="month" align=center>
-					<span><a href="#">&larr;</a></span>
-					<span>Квітень 2015</span>
-					<span><a href="#">&rarr;</a></span>
-				</div>
-
-				<!-- Start Group Listing -->
-				<table class="table table-hover table-striped table-bordered">
-					<thead>
-						<tr>
-							<th>№</th>
-							<th>Студент</th>
-							<th>Ср 1</th>
-							<th>Чт 2</th>
-							<th>Пт 3</th>
-							<th>Сб 4</th>
-							<th>Вс 5</th>
-							<th>Пн 6</th>
-							<th>Вт 7</th>
-							<th>Ср 8</th>
-							<th>Чт 9</th>
-							<th>Пт 10</th>
-							<th>Сб 11</th>
-							<th>Вс 12</th>
-							<th>Пн 13</th>
-							<th>Вт 14</th>
-							<th>Ср 15</th>
-							<th>Чт 16</th>
-							<th>Пт 17</th>
-							<th>Сб 18</th>
-							<th>Вс 19</th>
-							<th>Пн 20</th>
-							<th>Вт 21</th>
-							<th>Ср 22</th>
-							<th>Чт 23</th>
-							<th>Пт 24</th>
-							<th>Сб 25</th>
-							<th>Вс 26</th>
-							<th>Пн 27</th>
-							<th>Вт 28</th>
-							<th>Ср 29</th>
-							<th>Чт 30</th>
-						</tr>
-					</thead>
-					<tbody>
-						<tr>
-							<td>1</td>
-							<td><a title="Редагувати" href="#">Зак Тарас</a></td>
-							<td><input type="checkbox"></td>
-							<td><input type="checkbox"></td>
-							<td><input type="checkbox"></td>
-							<td><input type="checkbox"></td>
-							<td><input type="checkbox"></td>
-							<td><input type="checkbox"></td>
-							<td><input type="checkbox"></td>
-							<td><input type="checkbox"></td>
-							<td><input type="checkbox"></td>
-							<td><input type="checkbox"></td>
-							<td><input type="checkbox"></td>
-							<td><input type="checkbox"></td>
-							<td><input type="checkbox"></td>
-							<td><input type="checkbox"></td>
-							<td><input type="checkbox"></td>
-							<td><input type="checkbox"></td>
-							<td><input type="checkbox"></td>
-							<td><input type="checkbox"></td>
-							<td><input type="checkbox"></td>
-							<td><input type="checkbox"></td>
-							<td><input type="checkbox"></td>
-							<td><input type="checkbox"></td>
-							<td><input type="checkbox"></td>
-							<td><input type="checkbox"></td>
-							<td><input type="checkbox"></td>
-							<td><input type="checkbox"></td>
-							<td><input type="checkbox"></td>
-							<td><input type="checkbox"></td>
-							<td><input type="checkbox"></td>
-							<td><input type="checkbox"></td>
-						</tr>
-						<tr>
-							<td>2</td>
-							<td><a title="Редагувати" href="#">Гічка Сергій</a></td>
-							<td><input type="checkbox"></td>
-							<td><input type="checkbox"></td>
-							<td><input type="checkbox"></td>
-							<td><input type="checkbox"></td>
-							<td><input type="checkbox"></td>
-							<td><input type="checkbox"></td>
-							<td><input type="checkbox"></td>
-							<td><input type="checkbox"></td>
-							<td><input type="checkbox"></td>
-							<td><input type="checkbox"></td>
-							<td><input type="checkbox"></td>
-							<td><input type="checkbox"></td>
-							<td><input type="checkbox"></td>
-							<td><input type="checkbox"></td>
-							<td><input type="checkbox"></td>
-							<td><input type="checkbox"></td>
-							<td><input type="checkbox"></td>
-							<td><input type="checkbox"></td>
-							<td><input type="checkbox"></td>
-							<td><input type="checkbox"></td>
-							<td><input type="checkbox"></td>
-							<td><input type="checkbox"></td>
-							<td><input type="checkbox"></td>
-							<td><input type="checkbox"></td>
-							<td><input type="checkbox"></td>
-							<td><input type="checkbox"></td>
-							<td><input type="checkbox"></td>
-							<td><input type="checkbox"></td>
-							<td><input type="checkbox"></td>
-							<td><input type="checkbox"></td>
-						</tr>
-					</tbody>
-				</table>
-				<!-- End Students Listing -->
-
 {% endblock content %}			
