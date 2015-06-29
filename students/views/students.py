@@ -144,6 +144,7 @@ def students_add(request):
 class StudentUpdateForm(ModelForm):
 	class Meta:
 		model = Student
+		fields = '__all__'
 
 	def __init__(self, *args, **kwargs):
 		super(StudentUpdateForm, self).__init__(*args, **kwargs)
