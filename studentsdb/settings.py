@@ -89,7 +89,8 @@ TEMPLATE_CONTEXT_PROCESSORS = \
 	"django.core.context_processors.request",
 	'django.contrib.messages.context_processors.messages',
 	"studentsdb.context_processors.students_proc",
-	)
+	"students.context_processors.groups_processor",
+    )
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, '..', 'media')
