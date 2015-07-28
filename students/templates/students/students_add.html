@@ -55,8 +55,12 @@
 					  <div class="form-group">
 					    <label for="birthday" class="col-sm-2 control-label">Дата народження*</label>
 					    <div class="col-sm-10">
-					      <input type="text" class="form-control" id="birthday" name="birthday" placeholder="Birthday" value="{{ request.POST.birthday }}">
-							<span class="help-block">{{ errors.birthday }}</span>
+					    	<div class="input-group" id="dateinput">
+					      <input type="text" class="form-control dateinput" id="birthday" name="birthday" placeholder="Birthday" value="{{ request.POST.birthday }}">
+					      <span class="input-group-addon">
+                        	<span class="glyphicon glyphicon-calendar"></span>
+                    	  </span>
+							</div>
 					    </div>
 					  </div>
 
