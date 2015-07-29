@@ -131,7 +131,7 @@ function initEditStudentForm(form, modal){
 				// to get updated students list;
 				// reload after 2 seconds, so that user can read
 				// success message
-				setTimeout(function(){location.reload(true);}, 50000);
+				setTimeout(function(){location.reload(true);}, 1000);
 			}
 		}
 	});
