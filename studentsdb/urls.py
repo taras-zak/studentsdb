@@ -3,6 +3,8 @@ from django.contrib import admin
 from .settings import MEDIA_ROOT, DEBUG
 from students.views.students import StudentUpdateView, StudentDeleteView
 from students.views.journal import JournalView
+from django.contrib.auth import views as auth_views
+from django.views.generic.base import RedirectView
 
 urlpatterns = patterns('',
     # Students urls
@@ -34,6 +36,11 @@ urlpatterns = patterns('',
 
 	#admin
     url(r'^admin/', include(admin.site.urls)),
+
+    # User Related urls
+	url(r'^users/logout/$', auth_views.logout, kwargs={'next_page':	'home'}, name='auth_logout'),
+	url(r'^register/complete/$', RedirectView.as_view(pattern_name='home'),	name='registration_complete'),
+	url(r'^users/', include('registration.backends.simple.urls',namespace='users')),
 
 )
 

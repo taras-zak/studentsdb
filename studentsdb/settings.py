@@ -42,6 +42,8 @@ INSTALLED_APPS = (
     'django.contrib.staticfiles',
 	'crispy_forms',
     'students',
+    'registration',
+    'stud_auth',
 )
 
 MIDDLEWARE_CLASSES = (
@@ -91,6 +93,10 @@ TEMPLATE_CONTEXT_PROCESSORS = \
 	"studentsdb.context_processors.students_proc",
 	"students.context_processors.groups_processor",
     )
+
+TEMPLATE_DIRS = (
+    os.path.join(BASE_DIR, 'stud_auth', 'templates'),
+)
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, '..', 'media')
@@ -155,3 +161,5 @@ LOGGING = {
         }
     }
 }
+
+REGISTRATION_OPEN = True
