@@ -126,7 +126,7 @@ LOGGING = {
         },
         'simple': {
             'format': '%(levelname)s: %(message)s'
-        },    
+        },
     },
     'handlers': {
         'null': {
@@ -139,7 +139,7 @@ LOGGING = {
             'formatter': 'verbose'
         },
         'file': {
-            'level':'INFO',
+            'level': 'INFO',
             'class': 'logging.FileHandler',
             'filename': LOG_FILE,
             'formatter': 'verbose'
@@ -163,3 +163,6 @@ LOGGING = {
 }
 
 REGISTRATION_OPEN = True
+
+LOGIN_URL = 'users:auth_login'
+LOGOUT_URL = 'users:auth_logout'
