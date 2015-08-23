@@ -2,9 +2,11 @@ from django.conf.urls import patterns, include, url
 from django.contrib import admin
 from .settings import MEDIA_ROOT, DEBUG
 from students.views.students import StudentUpdateView, StudentDeleteView
+from students.views.groups import groups_list, groups_add, groups_edit, groups_delete
 from students.views.journal import JournalView
 from django.contrib.auth import views as auth_views
 from django.views.generic.base import RedirectView
+from django.contrib.auth.decorators import login_required
 
 urlpatterns = patterns('',
     # Students urls
@@ -17,7 +19,7 @@ urlpatterns = patterns('',
     # Groups urls
 
     url(r'^groups/$', 'students.views.groups.groups_list', name='groups'),
-    url(r'^groups/add/$', 'students.views.groups.groups_add', name='groups_add'),
+    url(r'^groups/add/$', login_required(groups_add), name='groups_add'),
     url(r'^groups/(?P<gid>\d+)/edit/$', 'students.views.groups.groups_edit', name='groups_edit'),
     url(r'^groups/(?P<gid>\d+)/delete/$', 'students.views.groups.groups_delete', name='groups_delete'),
 

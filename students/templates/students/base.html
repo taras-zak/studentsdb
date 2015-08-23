@@ -3,139 +3,152 @@
 <!DOCTYPE html>
 <html lang="uk">
 <head>
-	<meta charset="UTF-8">
-	<title>Сервіс обліку студентів - {% block meta_title %}{% endblock meta_title %}</title>
-	<meta name="description"
-			value="Система обліку студентів навчального закладу"/>
+    <meta charset="UTF-8">
+    <title>Сервіс обліку студентів - {% block meta_title %}{% endblock meta_title %}</title>
+    <meta name="description"
+            value="Система обліку студентів навчального закладу"/>
 
 
 <!-- Include Styles -->
-		<link rel="stylesheet" href="https://cdn.jsdelivr.net/bootstrap/3.3.0/css/bootstrap.min.css">
-		<link rel="stylesheet" href="http://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.0.0/css/bootstrap-datetimepicker.min.css">
-		<link rel="stylesheet" href="{{ PORTAL_URL }}{% static "css/main.css" %}">
-		{% block extra_css %}{% endblock extra_css %}
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/bootstrap/3.3.0/css/bootstrap.min.css">
+        <link rel="stylesheet" href="http://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.0.0/css/bootstrap-datetimepicker.min.css">
+        <link rel="stylesheet" href="{{ PORTAL_URL }}{% static "css/main.css" %}">
+        {% block extra_css %}{% endblock extra_css %}
 
 </head>
 
 
 <body>
 
-	<!-- Start Container -->
-	<div class="container">
-		<!-- Start Header -->
-		<div class="row" id="header">
-			<!-- Logo -->
-			<div class="col-xs-6">
-				<h1>Сервіс Обліку Студентів</h1>
-			</div>
+    <!-- Start Container -->
+    <div class="container">
+        <!-- Start Header -->
+        <div class="row" id="header">
+            <!-- Logo -->
+            <div class="col-xs-6">
+                <h1>Сервіс Обліку Студентів</h1>
+            </div>
 
-			{% if user.is_authenticated %}
-			<!-- Group selector -->
-			<div class="col-xs-4" id="group-selector">
-				<strong>Група:</strong>
-				<select>
-					<option value="">Всі Студенти</option>
-					{% for group in GROUPS %}
-					<option value="{{ group.id }}"{% if group.selected%}selected="1"{% endif %}>{{group.title}}{% if group.leader %}, {{ group.leader}}{% endif %}</option>
-					{% endfor%}
-				</select>
-			</div>
+            {% if user.is_authenticated %}
+            <!-- Group selector -->
+                <div class="col-xs-4" id="group-selector">
+                    <strong>Група:</strong>
+                    <select>
+                        <option value="">Всі Студенти</option>
+                        {% for group in GROUPS %}
+                        <option value="{{ group.id }}"{% if group.selected%}selected="1"{% endif %}>{{group.title}}{% if group.leader %}, {{ group.leader}}{% endif %}</option>
+                        {% endfor%}
+                    </select>
+                </div>
 
-			<!-- User's toolbar for authenticated users -->
-			<div class="col-xs-2" id="user-toolbar">
-				<span>{{ user.username }}</span> |
-				<a href="{% url "users:auth_logout" %}">Вийти</a>
-			</div>
-			{% else %}
-			<!-- User's toolbar for anonymous users -->
-			<div class="col-xs-6" id="user-toolbar">
-				<a href="{% url "users:auth_login" %}">Увійти</a> |
-				<a href="{% url "users:registration_register" %}">Зареєструватися</a>
-			</div>
-			{% endif %}
-		</div>
-		<!-- End Header -->
+                <!-- User's toolbar for authenticated users -->
+                <div class="col-xs-2" id="user-toolbar">
+                    <span>{{ user.username }}</span> |
+                    <a href="{% url "users:auth_logout" %}">Вийти</a>
+                </div>
+            
+            {% else %}
 
-		<!-- Start SubHeader -->
-		<div class="row" id="sub-header">
-			<div class="col-xs-12">
-				<ul class="nav nav-tabs" role="tablist">
-					<li role="presentation" {% if request.path == '/' %}class="active"{% endif %}><a href="{% url "home" %}">Студенти</a></li>
-					<li role="presentation" {% if '/journal' in request.path %}class="active"{% endif %}><a href="/journal">Відвідування</a></li>
-					<li role="presentation" {% if '/groups' in request.path %}class="active"{% endif %}><a href="{% url "groups" %}">Групи</a></li>
-					<li role="presentation" {% if '/exams' in request.path %}class="active"{% endif %}><a href="{% url "exams" %}">Іспити</a></li>
-					<li role="presentation" {% if '/contact-admin' in request.path %}class="active"{% endif %}><a href="{% url "contact_admin" %}">Контакт</a></li>
-				</ul>
-			</div>
-		</div>
-		<!-- End SubHeader -->
+            <!-- User's toolbar for anonymous users -->
+                <div class="col-xs-6" id="user-toolbar">
+                    <a href="{% url "users:auth_login" %}">Увійти</a> |
+                    <a href="{% url "users:registration_register" %}">Зареєструватися</a>
+                </div>
 
-		<!-- Start Main Page Content -->
-		<div class="row" id="content-columns">
-			
-			<div class="col-xs-12" id="content-column">
-				
-				<!-- Status Massage -->
+            {% endif %}
+        </div>
+        <!-- End Header -->
 
-				{% block status_message %}
-				<!-- Old massages-->
-				{% if request.GET.status_message %}
-				<div class="alert alert-warning" role="alert">{{ request.GET.status_message }}</div>
-				{% endif %}
-				<!-- End Old massages-->
-				{% if messages %}
-					{% for message in messages %}
-					<div{% if message.tags %} class="alert alert-{{ message.tags }}"{% endif %} role="alert">{{ message }}</div>
-					{% endfor %}				
-				{% endif %}
-				{% endblock %}
+        <!-- Start SubHeader -->
+        <div class="row" id="sub-header">
+            <div class="col-xs-12">
+                <ul class="nav nav-tabs" role="tablist">
+                    <li role="presentation" {% if request.path == '/' %}class="active"{% endif %}><a href="{% url "home" %}">Студенти</a></li>
 
-				<h2>{% block title %}{% endblock title %}</h2>
+                    {% if user.is_authenticated %}
 
-				{% block content %}{% endblock content %}
-		
-			</div>
+                        <li role="presentation" {% if '/journal' in request.path %}class="active"{% endif %}><a href="/journal">Відвідування</a></li>
+                        <li role="presentation" {% if '/groups' in request.path %}class="active"{% endif %}><a href="{% url "groups" %}">Групи</a></li>
+                        <li role="presentation" {% if '/exams' in request.path %}class="active"{% endif %}><a href="{% url "exams" %}">Іспити</a></li>
 
-		</div>
-		<!-- End Main Page Content -->
+                    {% endif %}
 
-		<!-- Start Footer -->
-		<div class="row" id="footer">
-			<div class="col-xs-12">
-				&copy; 2015 Сервіс Обліку Студентів
-			</div>
-		</div>
-		<!-- End Footer -->
+                    {% if perms.auth.add_user %}
+                    
+                        <li role="presentation" {% if '/contact-admin' in request.path %}class="active"{% endif %}><a href="{% url "contact_admin" %}">Контакт</a></li>
+                    {% endif %}
 
-	</div>
-	<!-- End Container -->
+                </ul>
+            </div>
+        </div>
+        <!-- End SubHeader -->
 
-	<!-- Modal Boilerplate -->
-	<div class="modal fade" id="myModal" tabindex="-1" role="dialog"
-		aria-labelledby="myModalLabel" aria-hidden="true">
-		<div class="modal-dialog">
-			<div class="modal-content">
-				<div class="modal-header">
-					<button type="button" class="close" data-dismiss="modal"
-					aria-label="Close">
-					<span aria-hidden="true">&times;</span></button>
-					<h4 class="modal-title" id="myModalLabel"><!-- --></h4>
-				</div>
-				<div class="modal-body"><!-- --></div>
-				<div class="modal-footer"><!-- --></div>
-			</div>
-		</div>
-	</div>
+        <!-- Start Main Page Content -->
+        <div class="row" id="content-columns">
+            
+            <div class="col-xs-12" id="content-column">
+                
+                <!-- Status Massage -->
+
+                {% block status_message %}
+                <!-- Old massages-->
+                {% if request.GET.status_message %}
+                <div class="alert alert-warning" role="alert">{{ request.GET.status_message }}</div>
+                {% endif %}
+                <!-- End Old massages-->
+                {% if messages %}
+                    {% for message in messages %}
+                    <div{% if message.tags %} class="alert alert-{{ message.tags }}"{% endif %} role="alert">{{ message }}</div>
+                    {% endfor %}                
+                {% endif %}
+                {% endblock %}
+
+                <h2>{% block title %}{% endblock title %}</h2>
+
+                {% block content %}{% endblock content %}
+        
+            </div>
+
+        </div>
+        <!-- End Main Page Content -->
+
+        <!-- Start Footer -->
+        <div class="row" id="footer">
+            <div class="col-xs-12">
+                &copy; 2015 Сервіс Обліку Студентів
+            </div>
+        </div>
+        <!-- End Footer -->
+
+    </div>
+    <!-- End Container -->
+
+    <!-- Modal Boilerplate -->
+    <div class="modal fade" id="myModal" tabindex="-1" role="dialog"
+        aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal"
+                    aria-label="Close">
+                    <span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title" id="myModalLabel"><!-- --></h4>
+                </div>
+                <div class="modal-body"><!-- --></div>
+                <div class="modal-footer"><!-- --></div>
+            </div>
+        </div>
+    </div>
 
 
-	<!-- Javascripts Section -->
-	<script src="http://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.1/jquery.js"></script>
-	<script src="http://cdnjs.cloudflare.com/ajax/libs/moment.js/2.9.0/moment.min.js"></script>
-	<script src="https://cdn.jsdelivr.net/bootstrap/3.3.0/js/bootstrap.min.js"></script>
-	<script src="http://cdnjs.cloudflare.com/ajax/libs/jquery.form/3.51/jquery.form.min.js"></script>
-	<script src="http://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.0.0/js/bootstrap-datetimepicker.min.js"></script>
-	<script src="{% static "js/main.js" %}"></script>
-	<script src="{% static "js/jquery.cookie.js" %}"></script>
-	{% block extra_js %} {% endblock extra_js %}
+    <!-- Javascripts Section -->
+    <script src="http://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.1/jquery.js"></script>
+    <script src="http://cdnjs.cloudflare.com/ajax/libs/moment.js/2.9.0/moment.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/bootstrap/3.3.0/js/bootstrap.min.js"></script>
+    <script src="http://cdnjs.cloudflare.com/ajax/libs/jquery.form/3.51/jquery.form.min.js"></script>
+    <script src="http://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.0.0/js/bootstrap-datetimepicker.min.js"></script>
+    <script src="{% static "js/main.js" %}"></script>
+    <script src="{% static "js/jquery.cookie.js" %}"></script>
+    {% block extra_js %} {% endblock extra_js %}
 </body>
 </html>
