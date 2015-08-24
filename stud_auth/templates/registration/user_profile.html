@@ -1,0 +1,45 @@
+{% extends "students/base.html" %}
+
+{% load i18n %}
+
+{% block meta_title %}{{ user.get_full_name|default:user.username }}{% endblock meta_title%}
+
+{% block title %}{{ user_profile.get_full_name|default:user_profile.username }}{% endblock title %}
+
+{% block status_message %}
+    {% if form.errors %}
+    <div class="alert alert-warning" role="alert">
+        {% trans "Please, correct the following errors." %}{{ form.non_field_errors }}
+    </div>
+    {% endif %}
+{% endblock %}
+
+{% block content %}
+
+<table class="table table-striped">
+    {% if user_profile.email %}
+    <tr>
+        <td>{% trans "Email" %}:</td>
+        <td>{{ user_profile.email }}</td>
+    </tr>
+    {% endif %}
+
+    {% if user_profile.username %}
+    <tr>
+        <td>{% trans "Username" %}:</td>
+        <td>{{ user_profile.username }}</td>
+    </tr>
+    {% endif %}
+
+    {% if user_profile.date_joined %}
+    <tr>
+        <td>{% trans "Joined" %}:</td>
+        <td>{{ user_profile.date_joined }}</td>
+    </tr>
+    {% endif %}
+    
+</table>
+
+
+
+{% endblock content %}

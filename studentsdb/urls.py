@@ -4,6 +4,7 @@ from .settings import MEDIA_ROOT, DEBUG
 from students.views.students import StudentUpdateView, StudentDeleteView
 from students.views.groups import groups_list, groups_add, groups_edit, groups_delete
 from students.views.journal import JournalView
+from students.views.users import ProfileView
 from django.contrib.auth import views as auth_views
 from django.views.generic.base import RedirectView
 from django.views.generic import TemplateView
@@ -43,6 +44,7 @@ urlpatterns = patterns('',
     # User Related urls
     url(r'^users/profile/$', login_required(TemplateView.as_view(
         template_name='registration/profile.html')), name='profile'),
+    url(r'^users/profile/(?P<uid>\d+)$', login_required(ProfileView), name='user_profile'),
     url(r'^users/logout/$', auth_views.logout, kwargs={'next_page':	'home'}, name='auth_logout'),
     url(r'^register/complete/$', RedirectView.as_view(pattern_name='home'),	name='registration_complete'),
     url(r'^users/', include('registration.backends.simple.urls', namespace='users')),
