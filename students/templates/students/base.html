@@ -13,6 +13,7 @@
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/bootstrap/3.3.0/css/bootstrap.min.css">
         <link rel="stylesheet" href="http://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.0.0/css/bootstrap-datetimepicker.min.css">
         <link rel="stylesheet" href="{{ PORTAL_URL }}{% static "css/main.css" %}">
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css">
         {% block extra_css %}{% endblock extra_css %}
 
 </head>
@@ -51,6 +52,8 @@
 
             <!-- User's toolbar for anonymous users -->
                 <div class="col-xs-6" id="user-toolbar">
+                    
+                    <a href="{% url 'social:begin' 'facebook' %}?next={{ request.path }}" class="btn btn-xs btn-facebook"><i class="fa fa-facebook"></i> | Connect with Facebook</a> |
                     <a href="{% url "users:auth_login" %}">Увійти</a> |
                     <a href="{% url "users:registration_register" %}">Зареєструватися</a>
                 </div>

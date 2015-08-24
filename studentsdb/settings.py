@@ -40,6 +40,7 @@ INSTALLED_APPS = (
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'social.apps.django_app.default',
     'crispy_forms',
     'students',
     'registration',
@@ -92,7 +93,17 @@ TEMPLATE_CONTEXT_PROCESSORS = \
         "django.contrib.messages.context_processors.messages",
         "studentsdb.context_processors.students_proc",
         "students.context_processors.groups_processor",
+        "social.apps.django_app.context_processors.backends",
+        "social.apps.django_app.context_processors.login_redirect",
     )
+
+AUTHENTICATION_BACKENDS = (
+    'social.backends.facebook.FacebookOAuth2',
+    'django.contrib.auth.backends.ModelBackend',
+)
+
+SOCIAL_AUTH_FACEBOOK_KEY = '453833421466825'
+SOCIAL_AUTH_FACEBOOK_SECRET = '7693d1a086a78c3ae906bb15a56adf94'
 
 TEMPLATE_DIRS = (
     os.path.join(BASE_DIR, 'stud_auth', 'templates'),

@@ -49,6 +49,9 @@ urlpatterns = patterns('',
     url(r'^register/complete/$', RedirectView.as_view(pattern_name='home'),	name='registration_complete'),
     url(r'^users/', include('registration.backends.simple.urls', namespace='users')),
 
+    # Social Auth Related urls
+    url('', include('social.apps.django_app.urls', namespace='social')),
+
 )
 
 if DEBUG:
