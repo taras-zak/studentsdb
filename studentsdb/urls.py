@@ -6,6 +6,7 @@ from students.views.groups import groups_list, groups_add, groups_edit, groups_d
 from students.views.journal import JournalView
 from django.contrib.auth import views as auth_views
 from django.views.generic.base import RedirectView
+from django.views.generic import TemplateView
 from django.contrib.auth.decorators import login_required
 
 urlpatterns = patterns('',
@@ -40,6 +41,8 @@ urlpatterns = patterns('',
     url(r'^admin/', include(admin.site.urls)),
 
     # User Related urls
+    url(r'^users/profile/$', login_required(TemplateView.as_view(
+        template_name='registration/profile.html')), name='profile'),
     url(r'^users/logout/$', auth_views.logout, kwargs={'next_page':	'home'}, name='auth_logout'),
     url(r'^register/complete/$', RedirectView.as_view(pattern_name='home'),	name='registration_complete'),
     url(r'^users/', include('registration.backends.simple.urls', namespace='users')),
