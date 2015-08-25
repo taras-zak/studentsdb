@@ -6,13 +6,6 @@
 
 {% block title %}{{ user_profile.get_full_name|default:user_profile.username }}{% endblock title %}
 
-{% block status_message %}
-    {% if form.errors %}
-    <div class="alert alert-warning" role="alert">
-        {% trans "Please, correct the following errors." %}{{ form.non_field_errors }}
-    </div>
-    {% endif %}
-{% endblock %}
 
 {% block content %}
 
@@ -44,6 +37,11 @@
         <td>{{ user_profile.stprofile.mobile_phone }}</td>
     </tr>
     {% endif %}
+
+    <tr>
+        <td>{% trans "Last visit" %}:</td>
+        <td>{{ user_profile.last_login }}</td>
+    </tr>
     
 </table>
 

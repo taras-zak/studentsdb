@@ -1,0 +1,39 @@
+{% extends "students/base.html" %}
+
+{% load i18n %}
+
+{% block meta_title %}Users{% endblock meta_title%}
+
+{% block title %}Users{% endblock title %}
+
+{% block content %}
+
+<table class="table table-striped">
+    <tr>
+        <th>#</th>
+        <th>Користувач</th>
+        <th>Залучився</th>
+    </tr>
+
+    {% for user in users %}
+
+    
+    <tr>
+        <td>{{ forloop.counter }}</td>
+        {% if user.username %}
+        <td><a href="{% url "user_profile" user.id %}">{{ user.username }}</a></td>
+        {% endif %}
+
+        {% if user.date_joined %}
+        <td>{{ user.date_joined }}</td>
+        {% endif %}
+
+    </tr>
+
+    {% endfor %}
+        
+</table>
+
+
+
+{% endblock content %}
