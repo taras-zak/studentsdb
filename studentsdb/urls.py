@@ -9,6 +9,8 @@ from django.contrib.auth import views as auth_views
 from django.views.generic.base import RedirectView
 from django.views.generic import TemplateView
 from django.contrib.auth.decorators import login_required
+#from django.contrib.auth.forms import PasswordResetForm
+from django.contrib.auth.views import password_change
 
 urlpatterns = patterns('',
     # Students urls
@@ -44,8 +46,14 @@ urlpatterns = patterns('',
     # User Related urls
     url(r'^users/profile/$', login_required(TemplateView.as_view(
         template_name='users/profile.html')), name='profile'),
+    url(r'^users/profile/change_password/$', password_change, {'template_name': 'users/password_change.html'}, name='change_password'),
+    url(r'^password_change/done/$', 'django.contrib.auth.views.password_change_done', name='password_change_done'),
     url(r'^users/profiles/$', login_required(ProfilesView), name='profiles'),
     url(r'^users/profiles/(?P<uid>\d+)$', login_required(ProfileView), name='user_profile'),
+    #url(r'^users/password/reset/$','django.contrib.auth.views.password_reset',
+    #    {'password_reset_form': PasswordResetForm,'post_reset_redirect': '/user/password/reset/done/'},
+    #    name='password_reset'),
+    #url(r'^user/password/reset/done/$','django.contrib.auth.views.password_reset_done'),
     url(r'^users/logout/$', auth_views.logout, kwargs={'next_page':	'home'}, name='auth_logout'),
     url(r'^register/complete/$', RedirectView.as_view(pattern_name='home'),	name='registration_complete'),
     url(r'^users/', include('registration.backends.simple.urls', namespace='users')),
