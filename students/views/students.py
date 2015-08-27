@@ -57,7 +57,6 @@ def students_list(request):
         # last page of results.
         students = paginator.page(paginator.num_pages)
 
-
     return render(request, 'students/students_list.html',
         {'students': students})
 
