@@ -22,20 +22,14 @@ class RequestTimeMiddleware(object):
         request.end_time = datetime.now()
 
         if 'text/html' in response.get('Content-Type', ''):
-            response.soup = BeautifulSoup(response.content)
+            response.soup = BeautifulSoup(response.content, 'html.parser')
+
             response.original_tag = response.soup.body
             response.new_tag = response.soup.new_tag("div")
             response.new_tag.string = 'Request took: %s' % str(request.end_time - request.start_time)
             response.original_tag.append(response.new_tag)
-            #response.content = response.soup
-            #soup.body.append('Request took: %s' % str(request.end_time - request.start_time))
-        print(response.content)
-        
-        
-        #if 'text/html' in response.get('Content-Type', ''):
-        #    response.write('<br/>Request took: %s' % str(request.end_time - request.start_time))
-        #print type(response.content)
-        #print request
+            response.content = str(response.soup)
+
         return response
 
     def process_view(self, request, view, args, kwargs):
