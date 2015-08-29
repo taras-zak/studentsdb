@@ -103,6 +103,7 @@ def students_add(request):
                     data['birthday'] = birthday
 
             ticket = request.POST.get('ticket', '').strip()
+            #TODO: validate
             if not ticket:
                 messages.add_message(request, messages.WARNING, "Номер білета є обов'язковим")
                 #errors['ticket'] = u"Номер білета є обов'язковим"
