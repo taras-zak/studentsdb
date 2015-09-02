@@ -47,6 +47,7 @@ def students_list(request):
     # paginate students !(do pagination from utils.py)
     paginator = Paginator(students, 3)
     page = request.GET.get('page')
+    
     try:
         students = paginator.page(page)
     except PageNotAnInteger:
@@ -58,7 +59,8 @@ def students_list(request):
         students = paginator.page(paginator.num_pages)
 
     return render(request, 'students/students_list.html',
-        {'students': students})
+        {'students': students,
+        'page':page})
 
 @login_required
 def students_add(request):

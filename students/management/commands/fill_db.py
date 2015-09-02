@@ -19,11 +19,13 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         if options['students']:
+
             population = 'abcdefghijklmnopqrstuvwxyz'
             name = ''
             groups = Group.objects.all()
 
             for _ in xrange(int(options['students'])):
+
                 first_name = name.join(sample(population, 4)).capitalize()
                 last_name = name.join(sample(population, 5)).capitalize()
                 birthday = date.today()
@@ -35,5 +37,6 @@ class Command(BaseCommand):
                         'birthday': str(birthday),
                         'ticket': ticket,
                         'student_group': group}
+
                 student = Student(**data)
                 student.save()
