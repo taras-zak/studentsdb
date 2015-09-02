@@ -39,15 +39,15 @@ def students_list(request):
     order_by = request.GET.get('order_by', '')
     if order_by == '':
         students = students.order_by('last_name')
-        
+
     if order_by in ('last_name', 'first_name', 'ticket','id'):
         students = students.order_by(order_by)
         if request.GET.get('reverse', '') == '1':
                 students = students.reverse()
     # paginate students !(do pagination from utils.py)
-    paginator = Paginator(students, 3)
+    paginator = Paginator(students, 4)
     page = request.GET.get('page')
-    
+
     try:
         students = paginator.page(page)
     except PageNotAnInteger:
@@ -59,8 +59,7 @@ def students_list(request):
         students = paginator.page(paginator.num_pages)
 
     return render(request, 'students/students_list.html',
-        {'students': students,
-        'page':page})
+        {'students': students})
 
 @login_required
 def students_add(request):
@@ -74,7 +73,7 @@ def students_add(request):
             # data for student object
             data = {'middle_name': request.POST.get('middle_name'),
                     'notes': request.POST.get('notes')}
-        
+
             # validate user input
             first_name = request.POST.get('first_name', '').strip()
             if not first_name:
