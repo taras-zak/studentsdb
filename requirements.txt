@@ -3,6 +3,7 @@ Django==1.7.10
 Pillow
 MySQL-python
 django-crispy-forms==1.4.0
+django-endless-pagination
 python-dateutil
 django-registration-redux==1.2
 python-social-auth==0.2.12
