@@ -41,6 +41,7 @@ INSTALLED_APPS = (
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'social.apps.django_app.default',
+    'endless_pagination',
     'crispy_forms',
     'students',
     'registration',
@@ -178,3 +179,5 @@ REGISTRATION_OPEN = True
 
 LOGIN_URL = 'users:auth_login'
 LOGOUT_URL = 'users:auth_logout'
+
+ENDLESS_PAGINATION_LOADING = """<img src="/static/img/loader.gif" alt="loading" height="30" width="30" />"""

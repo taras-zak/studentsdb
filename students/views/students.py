@@ -2,8 +2,6 @@
 from datetime import datetime
 
 from django.shortcuts import render
-from django.http import HttpResponse, HttpResponseRedirect
-from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.core.urlresolvers import reverse
 
 from django.contrib import messages
@@ -23,14 +21,16 @@ from crispy_forms.bootstrap import FormActions
 from ..models import Student, Group
 from ..util import paginate, get_current_group
 
-# Students
+from endless_pagination.decorators import page_template
 
-def students_list(request):
+# Students
+@page_template('students/students_list_page.html')
+def students_list(request, template='students/students_list.html', extra_context=None):
     # check if we need to show only one group of students
     current_group = get_current_group(request)
 
     if current_group:
-        students = Student.objects.filter(student_group = current_group)
+        students = Student.objects.filter(student_group=current_group)
     else:
         #otherwise show all students
         students = Student.objects.all()
@@ -40,26 +40,12 @@ def students_list(request):
     if order_by == '':
         students = students.order_by('last_name')
 
-    if order_by in ('last_name', 'first_name', 'ticket','id'):
+    if order_by in ('last_name', 'first_name', 'ticket', 'id'):
         students = students.order_by(order_by)
         if request.GET.get('reverse', '') == '1':
                 students = students.reverse()
-    # paginate students !(do pagination from utils.py)
-    paginator = Paginator(students, 4)
-    page = request.GET.get('page')
 
-    try:
-        students = paginator.page(page)
-    except PageNotAnInteger:
-        # If page is not an integer, deliver first page.
-        students = paginator.page(1)
-    except EmptyPage:
-        # If page is out of range (e.g. 9999), deliver
-        # last page of results.
-        students = paginator.page(paginator.num_pages)
-
-    return render(request, 'students/students_list.html',
-        {'students': students})
+    return render(request, template, {'students': students})
 
 @login_required
 def students_add(request):
@@ -133,7 +119,7 @@ def students_add(request):
                 # create student object
                 student = Student(**data)
                 student.save()
-         
+
                 # redirect user to students list
                 messages.add_message(request, messages.SUCCESS, 'Студента %s успішно додано!'% student)
                 return HttpResponseRedirect(reverse('home'))
