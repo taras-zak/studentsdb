@@ -34,7 +34,7 @@ def paginate(objects, size, request, context, var_name='object_list'):
 
     context['page_obj'] = object_list
     context['paginator'] = paginator
-    
+
     return context
 
 
