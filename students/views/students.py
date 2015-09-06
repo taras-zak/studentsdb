@@ -94,6 +94,8 @@ def students_add(request):
             if not ticket:
                 messages.add_message(request, messages.WARNING, "Номер білета є обов'язковим")
                 #errors['ticket'] = u"Номер білета є обов'язковим"
+            elif type(ticket) != int:
+                messages.add_message(request, messages.WARNING, "Введіть коректний номер білета")
             else:
                 data['ticket'] = ticket
 
@@ -110,10 +112,13 @@ def students_add(request):
                     data['student_group'] = groups[0]
 
             photo = request.FILES.get('photo')
-            if photo and ('image' in photo.content_type):
-                data['photo'] = photo
-            elif 'image' not in photo.content_type:
-                messages.add_message(request, messages.WARNING, "Завантажте корректне зображення")
+            if photo:
+                if 'image' in photo.content_type:
+                    if photo.size > 2000000:
+                        messages.add_message(request, messages.WARNING, "Зображення більше 2 МБ")
+                    data['photo'] = photo
+                else:
+                    messages.add_message(request, messages.WARNING, "Завантажте корректне зображення")
 
             # save student
             storage = get_messages(request)
