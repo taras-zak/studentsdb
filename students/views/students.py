@@ -2,6 +2,7 @@
 from datetime import datetime
 
 from django.shortcuts import render
+from django.http import HttpResponseRedirect
 from django.core.urlresolvers import reverse
 
 from django.contrib import messages
@@ -55,7 +56,6 @@ def students_add(request):
         if request.POST.get('add_button') is not None:
             # errors collection
             #errors = {}
-
             # data for student object
             data = {'middle_name': request.POST.get('middle_name'),
                     'notes': request.POST.get('notes')}
@@ -110,8 +110,10 @@ def students_add(request):
                     data['student_group'] = groups[0]
 
             photo = request.FILES.get('photo')
-            if photo:
+            if photo and ('image' in photo.content_type):
                 data['photo'] = photo
+            elif 'image' not in photo.content_type:
+                messages.add_message(request, messages.WARNING, "Завантажте корректне зображення")
 
             # save student
             storage = get_messages(request)

@@ -117,11 +117,11 @@ MEDIA_ROOT = os.path.join(BASE_DIR, '..', 'media')
 
 # email settings
 # please, set here you smtp server details and your admin email
-ADMIN_EMAIL = 'contact@studentsapp.com'
+ADMIN_EMAIL = 'assassin56@yandex.ru'
 EMAIL_HOST = 'smtp.mandrillapp.com'
 EMAIL_PORT = '587'
 EMAIL_HOST_USER = 'assassin56@yandex.ru'
-EMAIL_HOST_PASSWORD = 'API_KEY'
+EMAIL_HOST_PASSWORD = '61xD75bSdK-owB1_X8vP6Q'
 EMAIL_USE_TLS = True
 EMAIL_USE_SSL = False
 
