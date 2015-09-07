@@ -35,7 +35,7 @@ class ContactForm(forms.Form):
         self.helper.field_class = 'col-sm-4'
 
         # form buttons
-        self.helper.add_input(Submit('send_button', u'Надіслати'))  
+        self.helper.add_input(Submit('send_button', u'Надіслати'))
 
     from_email = forms.EmailField(
         label=u"Ваша Емейл Адреса")
