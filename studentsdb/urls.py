@@ -2,7 +2,7 @@ from django.conf.urls import patterns, include, url
 from django.contrib import admin
 from .settings import MEDIA_ROOT, DEBUG
 from students.views.students import StudentUpdateView, StudentDeleteView
-from students.views.groups import groups_list, groups_add, groups_edit, groups_delete
+from students.views.groups import groups_list, groups_add, groups_edit, GroupDeleteView
 from students.views.journal import JournalView
 from students.views.users import ProfilesView, ProfileView
 from django.contrib.auth import views as auth_views
@@ -25,7 +25,7 @@ urlpatterns = patterns('',
     url(r'^groups/$', 'students.views.groups.groups_list', name='groups'),
     url(r'^groups/add/$', login_required(groups_add), name='groups_add'),
     url(r'^groups/(?P<gid>\d+)/edit/$', 'students.views.groups.groups_edit', name='groups_edit'),
-    url(r'^groups/(?P<gid>\d+)/delete/$', 'students.views.groups.groups_delete', name='groups_delete'),
+    url(r'^groups/(?P<pk>\d+)/delete/$', GroupDeleteView.as_view(), name='groups_delete'),
 
     # Journal urls
 
