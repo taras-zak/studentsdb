@@ -3,7 +3,8 @@ from django.shortcuts import render
 from django.http import HttpResponseRedirect
 from django.core.urlresolvers import reverse
 
-from django.views.generic import UpdateView, DeleteView
+from django.views.generic import ListView
+from django.views.generic import CreateView, UpdateView, DeleteView
 
 from django.forms import ModelForm
 
@@ -27,32 +28,11 @@ from ..models import Group, Student
 from ..util import paginate, get_current_group
 
 #Groups
-def groups_list(request):
-    groups = Group.objects.all()
-
-    #try to order groups list
-    order_by = request.GET.get('order_by', '')
-    if order_by == '':
-        groups = groups.order_by('title')
-
-    if order_by in ('title', 'leader', 'id'):
-        groups = groups.order_by(order_by)
-        if request.GET.get('reverse', '') == '1':
-                groups = groups.reverse()
-    # paginate students
-    paginator = Paginator(groups, 4)
-    page = request.GET.get('page')
-    try:
-        groups = paginator.page(page)
-    except PageNotAnInteger:
-        # If page is not an integer, deliver first page.
-        groups = paginator.page(1)
-    except EmptyPage:
-        # If page is out of range (e.g. 9999), deliver
-        # last page of results.
-        groups = paginator.page(paginator.num_pages)
-
-    return render(request, 'students/groups_list.html', {'groups': groups})
+class GroupList(ListView):
+    model = Group
+    context_object_name = 'groups'
+    template_name = 'students/groups_list.html'
+    paginate_by = 5
 
 
 def groups_add(request):
@@ -108,6 +88,67 @@ def groups_add(request):
     return render(request, 'students/groups_add.html',
         {'students': Group.objects.all().order_by('last_name')})
 
+class GroupCreateForm(ModelForm):
+    class Meta:
+        model = Group
+        fields = '__all__'
+
+    def __init__(self, *args, **kwargs):
+        super(GroupCreateForm, self).__init__(*args, **kwargs)
+
+        self.helper = FormHelper(self)
+
+        # set form tag attributes
+        self.helper.form_action = reverse('groups_add')
+        self.helper.form_method = 'POST'
+        self.helper.form_class = 'form-horizontal'
+
+        # set form field properties
+        self.helper.help_text_inline = True
+        self.helper.html5_required = True
+        self.helper.label_class = 'col-sm-2 control-label'
+        self.helper.field_class = 'col-sm-4'
+
+        # add buttons
+        self.helper.layout = Layout(
+            'title',
+            'leader',
+            'notes',
+            Submit('add_button', u'Зберегти', css_class="btn btn-primary"),
+            Submit('cancel_button', u'Скасувати', css_class="btn btn-link"),
+            )
+
+class GroupCreateView(CreateView):
+    model = Group
+    template_name = 'students/groups_add_or_edit.html'
+    form_class = GroupCreateForm
+
+    def get_context_data(self, **kwargs):
+        """This method adds extra variables to template"""
+        # get original context data from parent class
+        context = super(GroupCreateView, self).get_context_data(**kwargs)
+        # tell template not to show logo on a page
+        context['page_title'] = u'Додати Групу'
+        # return context mapping
+        return context
+
+    @method_decorator(login_required)
+    def dispatch(self, *args, **kwargs):
+        return super(GroupCreateView, self).dispatch(*args, **kwargs)
+
+    def form_valid(self, form):
+        messages.add_message(self.request, messages.SUCCESS, u'Групу %s успішно додано!'% form.cleaned_data['title'])
+        return super(GroupCreateView, self).form_valid(form)
+
+    def get_success_url(self):
+        return reverse('groups')
+
+    def post(self, request, *args, **kwargs):
+        if request.POST.get('cancel_button'):
+            return HttpResponseRedirect(
+            u'%s?status_message=Додавання групи скасовано!' % reverse('groups'))
+        else:
+            return super(GroupCreateView, self).post(request, *args, **kwargs)
 
 class GroupUpdateForm(ModelForm):
     class Meta:
@@ -135,15 +176,23 @@ class GroupUpdateForm(ModelForm):
             'title',
             'leader',
             'notes',
-        Submit('add_button', u'Зберегти', css_class="btn btn-primary"),
-        Submit('cancel_button', u'Скасувати', css_class="btn btn-link"),
-        
-        )
+            Submit('add_button', u'Зберегти', css_class="btn btn-primary"),
+            Submit('cancel_button', u'Скасувати', css_class="btn btn-link"),
+            )
 
 class GroupUpdateView(UpdateView):
     model = Group
-    template_name = 'students/groups_edit.html'
+    template_name = 'students/groups_add_or_edit.html'
     form_class = GroupUpdateForm
+
+    def get_context_data(self, **kwargs):
+        """This method adds extra variables to template"""
+        # get original context data from parent class
+        context = super(GroupUpdateView, self).get_context_data(**kwargs)
+        # tell template not to show logo on a page
+        context['page_title'] = u'Редагувати Групу'
+        # return context mapping
+        return context
 
     @method_decorator(login_required)
     def dispatch(self, *args, **kwargs):
@@ -171,14 +220,10 @@ class GroupDeleteView(DeleteView):
             return super(GroupDeleteView, self).dispatch(*args, **kwargs)
         # can we use ProtectedError without import ?
         except ProtectedError:
-            #TODO: use massages
-            #messages.add_message(request,messages.INFO, 'Неможливо видалити групу: вона містить студентів!')
             url = self.get_success_url()
             return HttpResponseRedirect(url+u'?status_message=Неможливо видалити групу: вона містить студентів!')
 
-
     def get_success_url(self):
-        #TODO: message about success deletion 
         return reverse('groups')
 
     def post(self, request, *args, **kwargs):
@@ -187,4 +232,5 @@ class GroupDeleteView(DeleteView):
             url = self.get_success_url()
             return HttpResponseRedirect(url)
         else:
+            messages.add_message(request,messages.INFO, 'Групу видалено!')
             return super(GroupDeleteView, self).post(request, *args, **kwargs)
