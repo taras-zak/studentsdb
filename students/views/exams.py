@@ -2,11 +2,17 @@
 from django.shortcuts import render
 from django.http import HttpResponse
 from ..models import Exam
-from ..util import paginate
+from ..util import paginate, get_current_group
 
 
 def exams_list(request):
-    exams = Exam.objects.all()
+    current_group = get_current_group(request)
+    if current_group:
+        exams = Exam.objects.filter(forgroup_id=current_group)
+    else:
+        # otherwise show all students
+        exams = Exam.objects.all()
+    Exam.objects.filter(forgroup_id=2)
     #context = {}
     context = paginate(exams, 5, request, {}, var_name='exams')
 

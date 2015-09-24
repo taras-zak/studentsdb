@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+from datetime import datetime, date
 
 from dateutil.relativedelta import relativedelta
 from calendar import monthrange, weekday, day_abbr
@@ -8,8 +9,8 @@ from django.core.urlresolvers import reverse
 from django.http import JsonResponse
 
 from ..models import Student, MonthJournal
-from ..util import paginate
-from datetime import datetime, date
+from ..util import paginate, get_current_group
+
 
 class JournalView(TemplateView):
     template_name = 'students/journal.html'
@@ -48,8 +49,17 @@ class JournalView(TemplateView):
             'verbose': day_abbr[weekday(myear, mmonth, d)][:2]}
             for d in range(1, number_of_days+1)]
 
-        # get all students from database
-        queryset = Student.objects.order_by('last_name')
+        # get all students from database, or just one if we need to
+        # display journal for one student
+        if kwargs.get('pk'):
+            queryset = [Student.objects.get(pk=kwargs['pk'])]
+        else:
+            current_group = get_current_group(self.request)
+            if current_group:
+                queryset = Student.objects.filter(student_group=current_group)
+            else:
+                # otherwise show all students
+                queryset = Student.objects.all()
 
         # url to update student presence, for form post
         update_url = reverse('journal')
@@ -90,15 +100,25 @@ class JournalView(TemplateView):
         # with paginated students
         return context
 
+    def get_queryset(self):
+        queryset = super(JournalView, self).get_queryset()
+        current_group = get_current_group(self.request)
+        if current_group:
+            queryset = Student.objects.filter(student_group=current_group)
+        else:
+            # otherwise show all students
+            queryset = Student.objects.all()
+        return queryset
+
     def post(self, request, *args, **kwargs):
         data = request.POST
-        
+
         # prepare student, dates and presence data
         current_date = datetime.strptime(data['date'], '%Y-%m-%d').date()
         month = date(current_date.year, current_date.month, 1)
         present = data['present'] and True or False
         student = Student.objects.get(pk=data['pk'])
-        
+
         # get or create journal object for given student and month
         journal = MonthJournal.objects.get_or_create(student=student,
             date=month)[0]
@@ -109,4 +129,3 @@ class JournalView(TemplateView):
 
         # return success status
         return JsonResponse({'key': 'success'})
-
